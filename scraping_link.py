@@ -10,26 +10,39 @@ except ImportError as e:
 
 
 def extract_all_links(site):
+    """Mengambil semua link dari halaman web"""
     try:
         response = requests.get(site, timeout=10)
         response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser").find_all("a")
-        links = [link.get("href") for link in soup if link.get("href")]
+        soup = BeautifulSoup(response.text, "html.parser")
+        links = [link.get("href") for link in soup.find_all("a") if link.get("href")]
         return links
     except requests.exceptions.RequestException as e:
-        print(f"Terjadi kesalahan saat mengakses situs: {e}")
+        print(f"❌ Terjadi kesalahan saat mengakses situs: {e}")
         return []
 
 
 def filter_valid_links(links):
+    """Filter link yang valid (http / https)"""
     return [link for link in links if link.startswith("http://") or link.startswith("https://")]
 
 
 def filter_by_domain(links, domain):
+    """Filter link berdasarkan domain tertentu"""
     return [link for link in links if urlparse(link).netloc.endswith(domain)]
 
 
+def check_link_status(link):
+    """Cek status HTTP link, kembalikan kode status dan teks"""
+    try:
+        r = requests.head(link, allow_redirects=True, timeout=5)
+        return r.status_code, r.reason
+    except requests.RequestException:
+        return None, "Gagal"
+
+
 def save_links_to_file(links, filename="hasil_links.txt"):
+    """Simpan link ke file"""
     try:
         with open(filename, "w", encoding="utf-8") as file:
             for link in links:
@@ -55,10 +68,15 @@ if __name__ == "__main__":
         filtered_links = valid_links
 
     if filtered_links:
-        print("\n🔗 Link yang ditemukan:")
+        print("\n🔗 Link yang ditemukan beserta status HTTP:")
+        final_links = []
         for idx, link in enumerate(filtered_links, 1):
-            print(f"{idx}. {link}")
-        
-        save_links_to_file(filtered_links)
+            code, reason = check_link_status(link)
+            status_text = f"{code} {reason}" if code else "❌ Gagal"
+            print(f"{idx}. {link} -> {status_text}")
+            if code == 200:
+                final_links.append(link)  # Hanya simpan link 200 OK
+
+        save_links_to_file(final_links)
     else:
         print("⚠️ Tidak ada link yang sesuai filter.")
