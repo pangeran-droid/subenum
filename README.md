@@ -2,7 +2,7 @@
 
 Simple Passive Subdomain Enumerator written in Python.
 
-```markdown
+```text
                __                             
    _______  __/ /_  ___  ____  __  ______ ___ 
   / ___/ / / / __ \/ _ \/ __ \/ / / / __ `__ \
