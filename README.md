@@ -1,99 +1,115 @@
-# 🔗 Scraping Link Tool
+# Subenum
 
-Alat sederhana berbasis Python untuk mengekstrak semua link dari sebuah halaman website dan menyimpannya ke dalam file `.txt`. Cocok digunakan untuk scraping ringan, analisis SEO, atau sekadar eksplorasi web.
+Simple Passive Subdomain Enumerator written in Python.
+
+```markdown
+               __                             
+   _______  __/ /_  ___  ____  __  ______ ___ 
+  / ___/ / / / __ \/ _ \/ __ \/ / / / __ `__ \
+ (__  ) /_/ / /_/ /  __/ / / / /_/ / / / / / /
+/____/\__,_/_.___/\___/_/ /_/\__,_/_/ /_/ /_/ 
+                                              
+Simple Subdomain Enumerator
+
+
+usage: subenum.py [-h] -d DOMAIN [--status]
+
+```
+
+## Overview
+
+Subenum is a lightweight passive subdomain enumeration tool inspired by tools like `subfinder`.
+
+It collects subdomains from public sources and optionally checks HTTP status codes.
+
+Designed for:
+- Bug bounty recon
+- OSINT
+- Red team reconnaissance
+- Learning passive enumeration techniques
 
 ---
 
-## ✨ Fitur
+## Features
 
-- Menampilkan semua link dari halaman HTML.
-- Menyaring hanya link valid (`http`/`https`).
-- Opsi filter berdasarkan domain tertentu.
-- Menyimpan hasil ke file `hasil_links.txt`.
+- Passive subdomain enumeration
+- Multiple data sources:
+  - crt.sh
+  - dns.bufferover.run
+  - hackertarget
+- DNS resolution validation
+- Optional HTTP status check
+- Threaded performance
+- Clean CLI output
+- Pipe-friendly
 
 ---
 
-## 🛠️ Instalasi
+## Installation
 
-### 1. Pastikan Python sudah terpasang:
-
-Cek versi Python:
+Clone the repository:
 
 ```bash
-python --version
-# atau
-python3 --version
+git clone https://github.com/pangeran-droid/subenum.git
+cd subenum
+pip install requests
 ```
 
-Jika belum ada, instal Python terlebih dahulu dari https://www.python.org/downloads/
+## Usage
 
----
-
-### 2. Clone repositori ini
+Basic usage:
 
 ```bash
-git clone https://github.com/pangeran-droid/Scraping-Link.git
-cd Scraping-Link
+python3 subenum.py -d example.com
 ```
 
----
-
-### 3. Install dependensi
-
-Untuk **Linux**, **Windows**, dan **macOS**:
+## Output:
 
 ```bash
-pip install -r requirements.txt
+api.example.com
+dev.example.com
+mail.example.com
 ```
 
-Jika menggunakan Python 3:
+## Show HTTP status codes:
 
 ```bash
-pip3 install -r requirements.txt
+python3 subenum.py -d example.com --status
 ```
 
----
+## Output:
 
-## 🚀 Menjalankan Program
+```css
+api.example.com [200]
+dev.example.com [403]
+mail.example.com [301]
+```
+
+## Pipeline Example
+
+Pipe into other tools:
 
 ```bash
-python scraping_link.py
+python3 subenum.py -d example.com | tee subs.txt
 ```
-
-Atau:
-
 ```bash
-python3 scraping_link.py
+python3 subenum.py -d example.com | httpx
+```
+```bash
+python3 subenum.py -d example.com | nuclei -t templates/
 ```
 
-### Contoh:
+## Requirements
 
-```
-Masukan URL (contoh: https://example.com) : https://example.com
-Masukkan nama domain untuk filter (kosongkan jika tidak ingin filter domain, contoh: example.com) : example.com
-```
+- Python 3.8+
+- requests
 
-Hasil akan ditampilkan dan disimpan ke file `hasil_links.txt`.
+## Disclaimer
 
----
+This tool is intended for educational purposes and authorized security testing only.
 
-## 📁 Output
+Do not use against systems without proper permission.
 
-- Semua link valid disimpan di:
-  ```
-  hasil_links.txt
-  ```
+## License
 
----
-
-## 📌 Catatan
-
-- Hanya link dengan protokol `http://` atau `https://` yang akan diambil.
-- Jika ingin mendeteksi link internal, ubah ke absolute URL (bisa dikembangkan lebih lanjut).
-- Hati-hati scraping situs yang memiliki larangan di `robots.txt`.
-
----
-
-## 📄 Lisensi
-
-MIT License – bebas digunakan untuk keperluan pribadi maupun komersial.
+MIT License
